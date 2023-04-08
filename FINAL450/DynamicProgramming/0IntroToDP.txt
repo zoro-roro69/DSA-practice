@@ -1,0 +1,89 @@
+"Those who cannot remember the past are condemned to repeat it"
+															~ Dynamic Programming
+
+What is dynamic programming?
+
+	According to Wikipedia, dynamic programming is a method for solving a 
+	complex problem by breaking it down into a collection of simpler 
+	subproblems
+
+	It’s very important to understand this concept. Dynamic programming is very similar to 
+	recursion 
+						BUT
+	when subproblems are solved for multiple times, dynamic programming utilizes 
+	memorization techniques (usually a table) to store results of subproblems so 
+	that the same subproblems won’t be solved twice.
+
+	Dynamic programming is nothing but basically recursion plus some common sense.
+
+		DP  = recursion + common sense
+
+	What it means is that recursion helps us divide a large problem into smaller problems
+
+	And common sense says whatever problem you solve, you should first check if 
+	the same problem has already been solved. If not, then only solve it and 
+	store the solution somewhere for later use. 
+
+	It is memorizing the results of some subproblems which can be later used to 
+	solve other subproblems, and it’s called memoization.
+
+	The intuition behind dynamic programming is that we TRADE SPACE FOR TIME.
+
+To optimize a problem using dynamic programming, it must have two properties
+	— the optimal substructure and overlapping subproblems. 
+
+	What do we mean by optimal substructure ?
+
+		The term optimal substructure has two components — optimal and
+		substructure. Optimal means best or most favorable, and a substructure 
+		simply means a subproblem of the main problem.
+
+		A problem is said to have an optimal substructure if an optimal solution
+		to the main problem can be constructed efficiently from optimal solutions
+		of its subproblems. 
+
+		Suppose we have a network of roads and we are tasked to go from City A
+		to City B by taking the shortest path. And suppose that the optimal solution
+		to our main problem (the shortest path from A to B) is composed of optimal 
+		solutions of smaller subproblems such as the shortest paths between two intermediate
+		cities. Then, this problem is said to have an optimal structure.
+
+	And what are overlapping subproblems?
+
+		A problem has overlapping subproblems if finding its solution involves solving
+		the same subproblem multiple times.
+
+A majority of the Dynamic Programming problems can be categorized into two types:
+
+	1. Optimization problems
+	2. Combinatorial problems
+
+	An optimization problem is a problem of finding the best solution from all feasible solutions.
+	And combinatorial problems expect you to figure out the number of ways to do something or the
+	probability of some event happening.
+
+There are two ways to approach any dynamic programming based problems.
+
+	Bottom-Up Vs Top-Down:
+
+		Top-down approach: 
+
+			This is the direct result of the recursive formulation
+			of any problem. The top-down approach breaks the large problem into multiple subproblems
+			Suppose that the solution to the given problem can be formulated recursively using the 
+			solutions to its sub-problems, and that its sub-problems are overlapping. If this is the 
+			case, one can easily memorize or store the solutions to the sub-problems in a table. 
+			Whenever we attempt to solve a new sub-problem, we first check the table to see if it is 
+			already solved. If a solution has been recorded, we can use it directly. Otherwise, we 
+			solve the sub-problem and add its solution to the table.
+
+		Bottom Up approach:
+
+			Start by computing the result for the smallest subproblem (base case). 
+			Using the subproblem result, solve another subproblem and finally solve the whole problem.
+			Another way of understanding this would be: Try solving the sub-problems first and use their 
+			solutions to build on and arrive at solutions to bigger sub-problems. This is also usually 
+			done in a tabular form by iteratively generating solutions to bigger and bigger sub-problems
+			by using the solutions to small sub-problems. For example, if we already know the values of 
+			Fibonacci(41) and Fibonacci(40), we can directly calculate the value of Fibonacci(42).
+

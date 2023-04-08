@@ -1,0 +1,13 @@
+Can we reverse linked list in less than O(n) ?
+    for a singly linked list, answer is no we cannot
+
+For doubly linked list ?
+    yes we can assuming we have head and tail pointers stored
+    we can have a flag set
+    if flag is true
+        direction of traversal if from head to tail
+        we move forward using next pointer and backward using prev pointers
+    if flag is false
+        we reverse the diection of traversal, now its from tail to head
+        in this we move forward using "prev" pointer and move backward using 
+        "next" pointer

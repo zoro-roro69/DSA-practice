@@ -1,0 +1,42 @@
+why quicksort for arrays and mergesort for linked list ?
+
+    quicksort for arrays because:
+        1. locality of reference
+        2. avg complexity is nlogn
+        3. no extra space (mergesort takes O(n) for arrays)
+
+    mergesort for linked list because:
+        1. space complexity is O(1)
+        2. finding mid element is much easier as compared to finding a pivot
+
+
+
+PREPBYTES
+AUGUST 24, 2021
+Why is Quick Sort preferred for Arrays?
+    One of the main reasons for efficiency in quick sort is locality of reference, 
+    which makes it easy for the computer system to access memory locations that are near to each other,
+    which is faster than memory locations scattered throughout the memory which is the case in merge sort.
+
+    Quick sort is an in-place sorting algorithm i.e. it does not require any extra space, 
+    whereas Merge sort requires an additional linear space, which may be quite expensive. 
+    In merge sort, the allocation and deallocation of the extra space increases the running
+    time of the algorithm.
+
+    The most practical implementation of Quick sort uses a randomized version which has
+    an expected time complexity of O(NlogN). Although in the randomized version the worst case 
+    is possible, but for a particular pattern (like sorted array) the worst case doesn’t occur, 
+    and therefore the randomized quick sort works well in practice.
+
+Why is Merge Sort preferred for Linked Lists?
+    In the case of linked lists, the nodes may not be present at adjacent memory locations, 
+    therefore Merge Sort is used.
+
+    Unlike arrays, in linked lists, we can insert items in the middle in O(1) extra 
+    space and O(1) time if we are given a reference/pointer to the previous node. Therefore, 
+    we can implement the merge operation in the merge sort without using extra space.
+
+    Quick Sort requires a lot of access to different memory locations. To access ith 
+    index in a linked list, we have to travel each and every node from the head to ith node
+    as we don’t have a continuous block of memory. Therefore, the overhead increases for quick sort.
+    On the other hand, merge sort accesses data sequentially and the need for random access is low.

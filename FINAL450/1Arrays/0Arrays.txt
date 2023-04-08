@@ -1,0 +1,2068 @@
+########## PROB 1. find kth smallest/largest element in array ########## 
+	
+	-for kth largest element
+		1. create a min heap of size of k
+		2. insert first k elements
+		3. then for every element after that compare it with top of heap
+			- if (top < element)
+				pop top and add element to heap
+
+	-for kth smallest element
+		1. create a max heap of size k
+		2. insert first k elements
+		3. then for every element after that comapre it with top of heap
+			- if (top > element)
+				pop top and add element to heap
+
+	-time complexity O(k + (n-k)log(k))
+
+	-space complexity O(k) size of the heap
+
+########## PROB 2. sort an array containing only 0,1,2 ########## 
+
+	-simple solution is to use counting (2 iterations)
+		count number of 0's and 1's
+
+	-better solution is this (1 iteration only)
+
+	1. Keep three indices low = 1, mid = 1 and high = N and there are four ranges,
+	1 to low (the range containing 0), low to mid (the range containing 1), mid
+	to high (the range containing unknown elements) and high to N (the range containing 2).
+
+	2. Traverse the array from start to end and mid is less than high. (Loop counter is i)
+	3.  If the element is 0 then swap the element with the element at index low and update low = low + 1 and mid = mid + 1
+		If the element is 1 then update mid = mid + 1
+		If the element is 2 then swap the element with the element at index high and update
+		high = high – 1 and update i = i – 1. As the swapped element is not processed
+	Print the array.
+
+		void sort012(int a[], int arr_size)
+		{
+			int lo = 0;
+			int hi = arr_size - 1;
+			int mid = 0;
+		 
+			// Iterate till all the elements
+			// are sorted
+			while (mid <= hi) {
+				switch (a[mid]) {
+		 
+				// If the element is 0
+				case 0:
+					swap(a[lo++], a[mid++]);
+					break;
+		 
+				// If the element is 1 .
+				case 1:
+					mid++;
+					break;
+		 
+				// If the element is 2
+				case 2:
+					swap(a[mid], a[hi--]);
+					break;
+				}
+			}
+		}
+
+########## PROB 3. Move all negative to one side of array ########## 
+
+	//order not maintained in this
+	void moveAllNegativeToOneSide(vector <int> &arr){
+
+		int s = 0;
+		for (int i=0;i<arr.size();i++){
+			if (arr[i] < 0){
+				swap(arr[s++], arr[i]);
+			}
+		}
+	}
+
+	//if we want to maintain the order of negative and positive 
+	//we can use modifed insertion sort 
+
+########## PROB  4. find union and intersection of two sorted arrays ########## 
+
+	//assuming we dont want any duplicates in our solution
+	void findIntersection(vector <int> a, vector <int> b){
+
+		int i = 0, j = 0;
+		vector <int> intersection;
+
+		while( i < a.size() && j < b.size()){
+			if(a[i] == b[j]){
+				intersection.push_back(a[i]);
+				//increment i
+				i++;
+				//this is necessary if we want to remove duplicates
+				while(i < a.size() && a[i] == a[i-1]){
+					i++;
+				}
+
+				//increment j
+				j++;
+				while(j < b.size() && b[j] == b[j-1]){
+					j++;
+				}
+			}else{
+
+				if (a[i] < b[j]){
+					//increment i
+					i++;
+					while(i < a.size() && a[i] == a[i-1]){
+						i++;
+					}
+				}else{
+					//increment j
+					while(j < b.size() && b[j] == b[j-1]){
+						j++;
+					}
+				}
+
+			}
+		}
+
+		printVector(intersection);
+
+	}
+
+	//IMPORTANT-- it can be tempting to simply add the elements from both the arrays when
+	//they are not equal, but then we may end up with duplicate elements 
+	//so when the two elements are not equal add the smaller one and increment only its 
+	//corressponding index
+	void findUnion(vector <int> a, vector <int> b){
+
+		int i =0, j = 0;
+		vector <int> myunion;
+
+		while(i < a.size() && j < b.size()){
+
+			if (a[i] == b[j]){
+				myunion.push_back(a[i]);
+				//increment i
+				i++;
+				while(i < a.size() && a[i] == a[i-1])
+					i++;
+
+				//increment j
+				j++;
+				while(j < b.size() && b[j] == b[j-1])
+					j++;
+			}else{
+				//add the smaller and increment the index of one which is smaller
+				//consider the test case {1,2,3,4,5} {5,6,7,8,9} 
+				//if we dont add smaller one first we will end with two 5's in the result
+
+				if (a[i] < b[j]){
+					myunion.push_back(a[i]);
+					//increment i
+					i++;
+					while(i < a.size() && a[i] == a[i-1])
+						i++;
+				}else{
+					myunion.push_back(b[j]);
+					//increment j
+					j++;
+					while(j < b.size() && b[j] == b[j-1])
+						j++;
+				}
+			}
+		}
+
+		//if one of the arrays are not completely traversed yet
+		while(i < a.size()){
+			myunion.push_back(a[i]);
+			//increment i
+			i++;
+			while(i < a.size() && a[i] == a[i-1])
+				i++;
+		}
+
+		while(j < b.size()){
+			myunion.push_back(b[j]);
+			//incremnt j
+			j++;
+			while(j < b.size() && b[j] == b[j-1])
+				j++;
+		}
+
+		printVector(myunion);
+
+	}
+
+########## PROB 5 cyclcally rotate an array by one ########## 
+
+	//Two methods to do so
+	
+	//first is to simply store the last element and then
+	//shift all other by one
+	void rotateArrayByOne(vector <int> &arr){
+
+		if (arr.empty())
+			return;
+
+		int last = arr.back();
+		
+		for (int i= arr.size()-1;i>0;i--){
+			arr[i] = arr[i-1];
+		}
+
+		arr[0] = last;
+		printVector(arr);
+	}
+
+
+	//second method, take two pointer i =0, j = last ind
+	//then just swap (arr[i], arr[j]) until i<j
+	void rotateArrayByOne2(vector <int> &arr){
+
+		if (arr.empty())
+			return;
+
+		int i =0, j = arr.size()-1;
+
+		//here the last position will act as temporary storage for elements before putting
+		//them into their correct position
+		//example {1,2,3,4,5} in first iteration we swap 1,5 
+		//now 5 is at ind 0, 1 is at ind 4 now in next itr i == 1
+		// we swap 2,1, now 1 is at its correct position and 2 in temprary storage in next itr 
+		//2 will be at its correct position
+		for (;i<j;i++){
+			swap(arr[i], arr[j]);
+		}
+	}
+
+
+########## PROB 6 largest sum contigious sub array ########## 
+
+	//kadanes algo
+	int largestSumContigiousSubArray(vector <int> v){
+
+		int max_sum = INT_MIN;
+		int sum_till_now = 0;
+
+		for (auto x:v){
+			sum_till_now += x;
+			max_sum = max(max_sum, sum_till_now);
+			sum_till_now = max(0, sum_till_now);
+		}
+
+		return max_sum;
+	}
+
+	//storing the indices of sub array as well
+	void largestSumContigiousSubArray2(vector <int> v){
+
+		if (v.empty())
+			return;
+
+		int max_sum = v[0];
+		int sum_till_now = v[0];
+		int i =0, j =0;
+
+		if (sum_till_now < 0 ){
+			sum_till_now = 0; 
+			i++;
+		}
+
+		for (int k=1;k<v.size();k++){
+			sum_till_now += v[k];
+
+			if (sum_till_now > max_sum){
+				max_sum = sum_till_now;
+				j = k;
+			}
+
+			if (sum_till_now < 0){
+				sum_till_now = 0;
+				i++;
+			}
+		}
+
+		if (i > j) i = j;
+		cout << i << " to " << j << " sum: " << max_sum <<endl;
+	}
+
+	//storing indices better version
+	int maxSubArraySum(int a[], int size)
+	{
+		int max_so_far = INT_MIN, max_ending_here = 0,
+		   start =0, end = 0, s=0;
+	 
+		for (int i=0; i< size; i++ )
+		{
+			max_ending_here += a[i];
+	 
+			if (max_so_far < max_ending_here)
+			{
+				max_so_far = max_ending_here;
+				start = s;
+				end = i;
+			}
+	 
+			if (max_ending_here < 0)
+			{
+				max_ending_here = 0;
+				s = i + 1;
+			}
+		}
+		cout << "Maximum contiguous sum is "
+			<< max_so_far << endl;
+		cout << "Starting index "<< start
+			<< endl << "Ending index "<< end << endl;
+	}
+
+
+########## PROB 7 [VIMP] Minimize the maximum difference between heights  ########## 
+
+	//you are given an array that contains heights of n towers
+	//you are also given a number 'k' 
+
+	//We need to either increase or decrease the height of every 
+	//tower by k (only once) 
+
+	//The task is to minimize the difference between the heights of 
+	//the longest and the shortest tower after modifications and 
+	//output this difference.
+
+	reason behind sorting the array is to just not to find the
+	max and min element
+	but also to find the perfect candidate tower which will give 
+	minimum height difference 
+
+	ex {3,9,12,16,20} k = 3;
+
+	//now lets try to find that candidate for 3,
+	//its obvious that the perfect canidate for it will be the one
+	//with which it already has minimum difference among all other
+	//elements, and in sorted array that will be the next or previous
+	//element
+
+the perfect candidate for 3 is 9 {3 + 3, 9-3} = 0
+
+similarly for every element its perfect candidate is either
+the next one or perevious element in the sorted array
+
+	int minimizeMaximumDifference(vector <int> v, int k){
+
+		sort(v.begin(), v.end());
+		printVector(v);
+
+		int temp_min = v[0];
+		int temp_max = v.back();
+
+
+		int diff = temp_max - temp_min; //if k=0 then this will be the answer
+
+		for (int i=0; i<v.size()-1; i++){
+			temp_min = min(v[0]+k, v[i+1]-k); //trying to decrease the ht of i+1 element
+			temp_max = max(v[i]+k, v.back()-k);
+
+
+			diff = min(diff, temp_max - temp_min);
+		}
+
+		return diff;
+	}
+	
+
+	 int getMinDiff(int arr[], int n, int k) {
+		   sort(arr,arr+n);
+		   int diff=arr[n-1]-arr[0];
+		   
+		   int mini,maxi;
+		   mini=arr[0];
+		   maxi=arr[n-1];
+		   
+		   for(int i=1;i<n;i++){
+			   mini=min(arr[0]+k,arr[i]-k);
+			   maxi=max(arr[i-1]+k,arr[n-1]-k);
+			   diff=min(diff,maxi-mini);
+		   }
+		   // sort(arr,arr+n);
+		   return diff;
+	   }
+
+########## PROB 8 [VIMP] Minimize the jumps needed to reach end of array ########## 
+
+	//normal solution O(n^2)
+	int minimumJumpsToend(vector <int> v){
+
+		if (v.size() == 0 || v.size() == 1)
+			return 0;
+
+		vector <int> temp(v.size(), 0);
+
+		for (int i=v.size()-2;i>=0;i--){
+			if (v[i] + i >= v.size()-1){
+				temp[i] = 1;
+			}else{
+				if (v[i] == 0) {//not reachable
+					temp[i] = 0;
+					continue;    
+				}else{
+					int min_ = INT_MAX;
+					for (int j=1;j<=v[i];j++){
+						if (temp[i+j] != 0){
+							min_ = min(min_, temp[i+j]);
+						}
+					}
+					if (min_ == INT_MAX){//not reachable
+						temp[i] = 0;
+					}else{
+						temp[i] = min_ + 1;
+					}
+				}
+			}
+		}
+
+		printVector(temp);
+
+		return temp[0];
+	}
+
+	//O(n) solution
+	// Returns minimum number of jumps
+	// to reach arr[n-1] from arr[0]
+	int minJumps(int arr[], int n)
+	{
+	 
+		// The number of jumps needed to
+		// reach the starting index is 0
+		if (n <= 1)
+			return 0;
+	 
+		// Return -1 if not possible to jump
+		if (arr[0] == 0)
+			return -1;
+	 
+		// initialization
+		// stores all time the maximal
+		// reachable index in the array.
+		int maxReach = arr[0];
+	 
+		// stores the number of steps
+		// we can still take
+		int step = arr[0];
+	 
+		// stores the number of jumps
+		// necessary to reach that maximal
+		// reachable position.
+		int jump = 1;
+	 
+		// Start traversing array
+		int i = 1;
+		for (i = 1; i < n; i++) {
+			// Check if we have reached the end of the array
+			if (i == n - 1)
+				return jump;
+	 
+			// updating maxReach
+			maxReach = max(maxReach, i + arr[i]);
+	 
+			// we use a step to get to the current index
+			step--;
+	 
+			// If no further steps left
+			if (step == 0) {
+				// we must have used a jump
+				jump++;
+	 
+				// Check if the current index/position or lesser index
+				// is the maximum reach point from the previous indexes
+				if (i >= maxReach)
+					return -1;
+	 
+				// re-initialize the steps to the amount
+				// of steps to reach maxReach from position i.
+				step = maxReach - i;
+			}
+		}
+	 
+		return -1;
+	}
+
+
+########## PROB 9 [VIMP] find the duplicate in array of n+1 integers ########## 
+
+	Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+
+	There is only one repeated number in nums, return this repeated number.
+
+	You must solve the problem without modifying the array nums and uses only constant extra space.
+
+	NOTE-- All the integers in nums appear only once except for precisely one
+	integer which appears two or more times.
+
+	//since there is dupplicate number it indicates that there is a cycle
+	//here we modify the given array and mark the visited node to be -1
+
+		int findDuplicate(vector<int>& nums) {
+			int i = 0;
+			int num = nums[i];
+			while(nums[i] != -1){
+				num = nums[i];
+				nums[i] = -1;
+				i = num;
+			}
+			return num;
+		}
+
+		//using fast and slow pinters(torotise and hare)
+
+		int findDuplicate2(vector <int> &nums){
+
+			int f = nums[0];
+			int s = nums[0];
+
+			//first loop finds the collision point inside the cycle
+			while(1){
+				s = nums[s];
+				f = nums[nums[f]];
+
+				if (s == f) break;
+			}
+
+			//now we initialise one of the pointers to start, and leave other as it is
+			//now we increment both by one step, there point of collision is the entry point
+			//of loop and also our duplicate node
+
+			s = nums[0];
+			while(s!=f){
+				s = nums[s];
+				f = nums[f];
+			} 
+
+			return s;
+		}
+
+########## PROB 10 Merge two sorted arrays without extra space ########## 
+
+	//there is one more efficient method on gfg, check if interested
+
+	//when extra space is allowed, simple merge of mergeSort
+	void merge2SortedArrays(vector <int> v1, vector <int> v2){
+
+		vector <int> res;
+		
+		int i = 0, j = 0;
+
+		while(i<v1.size() && j < v2.size()){
+			if (v1[i] <= v2[j]){
+				res.push_back(v1[i++]);
+			}else{
+				res.push_back(v2[j++]);
+			}
+		}
+
+		while(i<v1.size())
+			res.push_back(v1[i++]);
+
+		while(j<v2.size())
+			res.push_back(v2[j++]);
+
+		cout << "res:"; printVector(res);
+		
+	}
+
+	//when no extra space is allowed
+	//insertion sort like algorithm, we start from last element of second array
+	//and try to insert it in first array
+	//complexity - O(n*m) , n = size of arr1, m = size of arr2
+
+	void merge2(vector <int> &v1, vector <int> &v2){
+
+		for (int j=v2.size()-1;j>=0;j--){
+			int i = v1.size()-1;
+			int last = v1[i];
+
+			while(v2[j]<v1[i]){
+				v1[i] = v1[i-1];
+				i--;
+			}
+
+			i++;
+			
+			if (i < v1.size()){
+				v1[i] = v2[j];
+				v2[j] = last; 
+			}
+		}
+		//now v1 and v2 will be in sorted order
+
+		printVector(v1);
+		printVector(v2);
+
+	}
+
+	//complexity - O((n+m)*log(n+m))
+	//youtube -- https://www.youtube.com/watch?v=H7ADLLVrxis
+	void merge3(vector <int> v1, vector <int> v2){
+
+		int n = v1.size();
+		int m = v2.size();
+
+		int gap = n+m;
+
+		int i =0, j = 0;
+		for (gap = nextGap(gap); gap>0;gap = nextGap(gap)){
+
+			for (i=0;i+gap<n;i++){
+				if (v1[i] > v1[i+gap]){
+					//swap
+					swap(v1[i], v1[i+gap]);
+				}
+			}
+
+			j = (gap>n) ? (gap-n):0; 
+
+			for (;i<n && j < m;i++,j++){
+				if (v1[i] > v2[j]){
+					//swap
+					swap(v1[i], v2[j]);
+				}
+			}
+
+			if (j<m){
+				for(;j+gap<m;j++){
+					if (v1[j] > v1[j+gap]){
+						//swap
+						swap(v1[j], v2[j+gap]);
+					}
+				}
+			}
+		}
+
+		printVector(v1);
+		printVector(v2);
+
+	}
+	
+	//another method
+
+	The solution can be further optimized by observing that while traversing the
+	two sorted arrays parallelly, if we encounter the jth second array element
+	is smaller than ith first array element, then jth element is to be included
+	and replace some kth element in the first array. This observation helps us 
+	with the following algorithm
+
+	Algorithm
+
+	1) Initialize i,j,k as 0,0,n-1 where n is size of arr1 
+	2) Iterate through every element of arr1 and arr2 using two pointers i and j respectively
+		if arr1[i] is less than arr2[j]
+			increment i
+		else
+			swap the arr2[j] and arr1[k]
+			increment j and decrement k
+
+	3) Sort both arr1 and arr2 
+
+
+	//complexity nlogn + mlogm == (n+m)log(n+m)
+
+	//code
+	
+	// Function to merge two arrays
+	void merge(int arr1[], int arr2[], int n, int m)
+	{
+		int i = 0, j = 0, k = n - 1;
+	   
+		// Until i less than equal to k
+		// or j is less than m
+		while (i <= k && j < m) {
+			if (arr1[i] < arr2[j])
+				i++;
+			else {
+				swap(arr2[j++], arr1[k--]);
+			}
+		}
+	   
+		// Sort first array
+		sort(arr1, arr1 + n);
+	   
+		// Sort second array
+		sort(arr2, arr2 + m);
+	}
+
+########## 11 PROB Kadanes algo ########## 
+
+	//kadanes algo is used to find a contigious sub array
+	//that has maximum sum
+
+	int maxSubArraySum(vector <int> &v){
+		if (v.size() == 0)
+			return 0;
+
+		int max_sum = v[0];
+		int sum_till_now = max(v[0], 0); //if first elment is negative
+
+		for (int i=1;i<v.size();i++){
+			sum_till_now += v[i];
+			max_sum = max(max_sum, sum_till_now);
+			sum_till_now = max(0, sum_till_now);
+		}
+		return max_sum;
+	}
+
+########## 12 PROB Merge intervals ########## 
+
+	//just remember one case after sorting
+	// ex {{1,4}, {2,3}}
+
+	struct MyComparator{
+		bool operator()(const vector <int> &v1, vector <int> &v2){
+			if (v1[0] == v2[0])
+				return v1[1]<=v2[1];
+			return v1[0] < v2[0];
+		}
+	};
+
+	vector<vector<int>> merge(vector<vector<int>>& intervals) {
+			
+		sort (intervals.begin(), intervals.end(), MyComparator()); //even without comparator it will sort in similar manner
+
+		vector <vector <int>> res;
+		res.push_back(intervals[0]);
+
+		for (int i=1;i<intervals.size();i++){
+			vector <int> a = res.back();
+			//check if current vector can be merged with last added in res
+			if (a[1]>=intervals[i][0]){
+				res.pop_back();
+				res.push_back({a[0], max(a[1], intervals[i][1])});
+			}else{
+				res.push_back(intervals[i]);
+			}
+		}
+
+		cout << "after" << endl;
+		print2dVector(res);
+		return
+
+########## 13 PROB Find next Permutation ########## 
+
+	given an array of integers, we need find the permutation of this array
+	which would occur next in lexicographical order
+
+	for example, for arr = [1,2,3], the following are considered permutations
+	of arr: [1,2,3], [1,3,2], [3,1,2], [2,3,1]
+
+	the next in lexicographical order would be -- [1,3,2]
+
+	if array is like [3,2,1] i.e it is last in lexicogrpahical order then its next
+	will be [1,2,3] (reverse of it)
+
+	//Algo for simple solution --
+	1. we start from the right of the array , and find the first element which
+	is not in decresing order. ex [5,4,2,7,6,5] here we can see 2() is not in order
+
+	2. then we traverse the array from i = 3 to 5 , to find the next greater element
+		in this case it is 5, then we swap 2 with 5
+		then we sort the array form i = 3 to 5 to get the answer
+	complexity -- O(nlogn)
+
+	//optimization
+	we can optimize step 2, instead of just simply traversing to find the next greater
+	element, we use binary search to find the next greater element than 2, 
+	in this case it is 5, than swap 5 and 2
+
+	after swapping we can notice that array on right side is in decreasing order
+	we just need to reverse it to get the answer
+
+	after swapping 5, 2 
+	- [5,4,5,7,6,2]
+
+	sorting gtom i=3 to 5
+	- [5,4,5,2,6,7] = answer
+
+	
+	//using bs to find the index of next largest element of 'cur' 
+	int binarySearch(vector <int> &v, int cur, int s, int e){
+		//here v[s to e] is sorted in decreasing order
+		//i.e we can apply binary search to find next greater element
+
+		int ans = s;//ans will store index of next greater element
+		while(s<=e){
+			int m = (s+e)/2;
+
+			if (cur < v[m]){//candidate ans
+				ans = m;
+				s = m+1;
+			}else{
+				e = m-1;
+			}
+		}
+		return ans;
+	}
+
+	void reverseVector(vector <int> &v, int s, int e){
+		for (;s<e;s++,e--){
+			swap(v[e], v[s]);
+		}
+	}
+
+	void nextPermutation(vector <int> &v){
+		//[5,4,1,3,2]
+		if (v.size()<=1)
+			return;
+
+		int i;
+		for (i = v.size()-2;i>=0;i--){
+			if (v[i] < v[i+1])
+				break;
+		}
+
+		if (i>=0){
+			int ind = binarySearch(v, v[i], i+1, v.size()-1);
+			swap(v[i], v[ind]); //swaping it with next largest element
+		}
+		i++;
+
+		//reversing the array from i to end, to get sorted array from i to end(to get lexicorgraphical
+		// order)
+		reverseVector(v,i,v.size()-1);
+	}
+
+########## 14 PROB count inversions in an array ##########  
+
+	given an array find number of inversions
+	ex - {5,4,1,3,2}
+	inversions - 4+3+0+1+0 = 8;
+`
+	int merge(vector <int> &v, int s, int mid, int e){
+		int inversion_count = 0;
+
+		vector <int> temp;
+		int i=s, j= mid+1;
+		for(; i<=mid && j<=e;){
+
+			if (v[i]<=v[j]){//no inversion
+				temp.push_back(v[i++]);
+			}else{
+				//inversion
+				temp.push_back(v[j++]);
+				inversion_count += mid-i+1;
+			}
+		}
+
+		while(i<=mid)
+			temp.push_back(v[i++]);
+
+		while(j<=e)
+			temp.push_back(v[j++]);
+
+		i = s;
+		for (auto x:temp)
+			v[i++]=x;
+
+		return inversion_count;
+
+	}
+
+	int mergeSort(vector <int> &v, int s, int e){
+		if (s >= e) 
+			return 0;
+		else{
+			int mid = (s+e)/2;
+
+			int inv = 0; 
+			inv += mergeSort(v, s, mid);
+			inv += mergeSort(v, mid+1, e);
+
+			return inv + merge(v, s, mid, e);
+		}
+	}
+
+########## 15 PROB Best time to buy and sell stocks ########## 
+
+	given array prices, where prices[i] is the price of a stock
+	on day i, your task is to find the perfect day to buy and sell
+	stock in order to maximimze your profit
+
+	you need to return max profit, return 0 if you cannot make any
+	profit
+
+	ex {7,3,5,1,2,6}
+	max profit -- 5 
+
+	//algo so basically what we do is we traverse the array and find
+	the best buy and try to sell it when price[i] is greater than best buy.
+	if it is less than best buy, then we check if that price can become our
+	best buy instead
+
+
+	int maxProfit(vector<int>& prices) {
+		int buy = prices[0];
+		int profit = 0;
+
+		for (int i=1;i<prices.size();i++){
+			if (prices[i]>buy){
+				profit = max(profit, prices[i] - buy);
+			}else{
+				buy = prices[i];
+			}
+		}
+		return profit;
+	}
+
+########## PROB 16 count number of pairs in array that sum to given value ########## 
+
+	ex-- arr = {1,5,7,-1} sum = 6;
+	ans = 2
+
+
+	arr = {1,1,1,1} sum = 2;
+	ans = 6
+
+	int getPairsCount(vector <int> v, int sum){
+
+		int res = 0;
+		unordered_map <int, int> mp;
+		mp[v[0]] = 1;
+
+		for (int i=1;i<v.size();i++){
+			if (mp.find(sum-v[i])!=mp.end()){
+				res += mp[sum-v[i]];
+			}
+			mp[v[i]]++;
+		}
+
+		return res;
+	}
+
+########## PROB 17 find common in 3 sorted arrays in one iteration ########## 
+
+	ex - 
+	//ar1[] = {1, 5, 5} 
+	//ar2[] = {3, 4, 5, 5, 10} 
+	//ar3[] = {5, 5, 10, 20} 
+
+	res - 5
+
+	vector <int> findCommonIn3Sorted(vector <int> a, vector <int> b, vector <int> c){
+		vector <int> res;
+
+		int i=0,j=0,k=0;
+
+		for(;i<a.size()&&j<b.size()&&k<c.size();){
+			//all are equal
+			if (a[i] == b[j] && b[j] == c[k]){
+				res.push_back(a[i]);
+
+				//uncomment the while loops, if you dont want any duplicates
+				//increment i
+				i++;
+				while(i<a.size() && a[i]==a[i-1])
+					i++;
+				//increment j
+				j++;
+				while(j<b.size() && b[j]==b[j-1])
+					j++;
+				//increment k
+				k++;
+				while(k<c.size() && c[k]==c[k-1])
+					k++;
+			}else{
+				//all are not equal
+				int max_ = max(a[i], max(b[j], c[k]));
+				
+				while(i<a.size() && a[i]<max_)
+					i++;
+
+				while(j<b.size() && b[j]<max_)
+					j++;
+				
+
+				while(k<c.size() && c[k]<max_)
+					k++;
+			}
+		}
+
+		return res;
+	}
+
+########## PROB 18 rearrange positive and negative in alternating order########## 
+
+
+	ex - {1, 2, 3, -1,-2, -3}
+	result - {1, -1, 2, -2, 3, -3}
+
+	ex - {-1,-2,-3,4,-3,2,-6}
+	result {4, -1, 2, -2, -3, -3, -6}
+
+
+	//solution 1, 
+	//order is not maintained 
+
+	void rearrangePositiveNegative(vector <int> v){
+		//check size
+		if (v.size()<=0)
+			return;
+
+		int next_pos = 0;
+		int next_neg = 1;
+
+		for (int i=0;i<v.size();){
+			if (i%2){ //odd place - for -ve
+				if (v[i]<0){
+					if (next_neg < i){
+						swap(v[i], v[next_neg]);
+						next_neg+=2;
+					}
+					i++;
+				}
+				else{
+					if (next_pos < v.size()){
+						swap(v[i], v[next_pos]);
+						next_pos +=2;
+					}else
+						i++;
+				}
+			}else{ //even plce - for +ve
+				if (v[i]>=0){
+					if (next_pos < i){
+						swap(v[i], v[next_pos]);
+						next_pos+=2;
+					}
+					i++;
+				}
+				else{
+					if (next_neg <v.size()){
+						swap(v[i], v[next_neg]);
+						next_neg += 2;
+					}else
+						i++;
+				}
+			}
+		}
+		cout <<"order not maintained:" ;printVector(v);
+	}
+
+	//solution 2 -- if we want to maintain the order
+	//modified insertion sort, to maintain the order
+	//O(n2)
+	void rearrange2(vector <int> v){
+
+		//even index -- positive
+		//odd index -- negative
+		int n = v.size();
+
+		for (int i=0;i<n;i++){
+			if (i%2 == 0){//even
+				if (v[i] >= 0)
+					continue;
+				else{
+					//find next positive
+					int j = i+1;
+					while(j<n && v[j]<0)
+						j++;
+
+					if (j == n)  //no positives left
+					   break;
+					//move the positive to i, and shift the array
+					int temp = v[j];
+					for (int k=j;k>i;k--)
+						v[k] = v[k-1];
+					v[i] = temp;
+				}
+			}else{//odd
+				if (v[i] < 0)
+					continue;
+				else{
+					//find next negative
+					int j = i+1;
+					while(j<n && v[j]>=0)
+						j++;
+
+					if (j == n) //no more negatives left
+						break;
+					
+					//move negative to i, and shift the array
+					int temp = v[j];
+					for (int k=j;k>i;k--)
+						v[k] = v[k-1];
+
+					v[i] = temp;
+				}
+
+			}
+		}
+		cout << "order maintained:" ; printVector(v);
+	}
+
+########## PROB 18 Find subarray with given sum ########## 
+
+	given a array and a value k, we need to find a subarray with
+	which sums to k
+
+	ex {4,1,-3,-1} k = 0
+	ans = true
+
+	ex {2,3,-1,19} k = 4
+	ans = true
+
+	//use prefix sum, store sum till now in sum, and check if sum-k
+	//exists, if it does then return true
+
+
+	bool findSubArraySumk(vector <int> v, int k){
+		unordered_set <int> mp;
+
+		int sum = 0;
+		for (auto x:v){
+			sum += x;
+			if (sum == k)
+				return true;
+			if (mp.find(sum-k)!=mp.end())
+				return true;
+
+			mp.insert(sum);
+		}
+		return false;
+	}
+
+########## PROB 19 find factorial of large number ########## 
+
+
+	void reverseVector(vector <int> &v){
+		for (int i=0, j = v.size()-1;i<j;i++,j--){
+			swap(v[i], v[j]);
+		}
+	}
+
+	vector <int> multiplyByDigit(vector <int> num, int digit){
+
+		vector <int> res;
+		int carry = 0;
+		int rem = 0;
+		for (auto x:num){
+			int prod = x*digit + carry;
+			carry = prod/10;
+			int rem = prod%10;
+			res.push_back(rem);
+		}
+		//if (carry)
+		//    res.push_back(carry);
+		
+		while(carry){
+			res.push_back(carry%10);
+			carry /= 10;
+		}
+
+		return res;
+	}
+
+	vector <int> findFactorial2(int n){
+
+		vector <int> res{1};
+
+		for (int i = 2;i<=n;i++){
+			res = multiplyByDigit(res, i);
+		}
+		reverseVector(res);
+		return res;
+	}
+
+########## PROB 20 find longest consecutive subsequence ########## 
+
+	given an array, our task is to find the longest consecutive subsequence
+	,the order in which consecutive numbers come doesnt matter
+
+	ex: - {4,9,1,2,7,5,3}
+
+	the longest sequence is {4,1,2,5,3}, lenght = 5
+
+	//Two methods to do this
+		1. using sorting, and then linearly checking for longest sequence
+		2. other approach is using hashing
+
+	//1. using sorting
+	// O(nlogn)- time, O(1) space
+	int longestSubsequence(vector <int> v){
+		sort(v.begin(), v.end());
+		printVector(v);
+		int res = 1;
+
+		for (int i = 0;i<v.size()-2;){
+			int count = 1;
+			while(i+1 < v.size() &&  v[i+1]-v[i] <=1){ //<= for duplicate elements as well
+				if (v[i+1] - v[i] == 1)
+					count++;
+				i++;
+			}
+			i++;
+			res = max(res, count);
+		}
+		return res;
+
+	}
+
+
+	//using hashing
+	//O(n) time and space
+	int longestSubsequence2(vector <int> v){
+		unordered_set <int> mp;
+
+		for (auto x:v)
+			mp.insert(x);
+
+		int res = 1;
+
+		for (int i =0 ;i<v.size();i++){
+			int count = 1;
+
+			int temp = v[i]-1;
+			//if cur element is starting element of the sequence
+			if (mp.find(temp) == mp.end()){
+				temp = v[i];           
+				while(mp.find(temp)!=mp.end()){
+					temp++;
+					count++;
+				}
+			}
+			res  = max(res, count);
+		}
+	}
+
+
+		
+########## PROB 21 find all elements in array that appear more than n/k times, where n is the size of array and k is given as argument ########## 
+
+	ex - {3, 1, 2, 2, 1, 2, 3, 3}, k = 4
+	n = 8
+	n/k = 2
+	elements that appear more than 2 times - 2,3
+
+
+	This is like finding the majority element, lets say we have k = 2
+	and we have array like {1,1,1,1,1,1,2,2,2,2} n = 10
+	n/k = 5
+	now if notice here there can be only 1 element with majority
+	i.e > n/k.
+	which is 1 in this case as it occurs 6 times
+
+	Note that there can never be more than k-1 elements in output 
+	like in above example for k=2, our output can have only one element
+
+	n/k basically means that dividing the array in 'k' parts with equal
+	size of n/k
+	among these parts there can only be atmost k-1 with size more than n>k
+
+	ex consider array - {3,3,3,2,2,2,4,4,4,1,1} n = 11
+	k = 4
+	n/k = 2
+
+	now lets cancel one element of each type in array
+	3-2-4-1 , array now {3,3,2,2,4,4,1}
+	again cancel
+	3-2-4-1, array now {3,2,4}
+	now since we are left with k-1 i.e 3 elements
+	now we see if there counts are more than n/k and print those
+
+	struct element{
+		int elem;
+		int count;
+
+	};
+
+	vector <int> moreThanNbyK(vector <int> v, int k){
+		vector <int> res;
+		int n = v.size();
+		int x = n/k;
+
+		struct element elements[k-1];
+
+		for (auto &e:elements){
+			e.count = 0;
+			e.elem = 1;
+		}
+
+		cout << "check" << endl;
+		for (auto e:elements){
+			cout << e.elem << endl;
+		}
+
+		for (auto a:v){
+			bool flag = false;
+			for (auto &e:elements){
+				if (e.elem == a){
+					e.count++;
+					flag = true;
+					break;
+				}
+			}
+			if (!flag){
+				for (auto &e:elements){
+					if (e.count == 0){
+						e.elem = a;
+						cout << a << "--" << e.elem << endl;
+						e.count = 1;
+						flag = true;
+						break;
+					}
+				}
+				if (!flag){//was not able to insert this element
+					for (auto &e:elements)
+						e.count--; //cancel step
+				}
+			}
+		}
+
+		for (auto e:elements){
+			int count = 0;
+			for (auto a:v){
+				if (e.elem == a)
+					count++;
+			}
+
+			if (count > x)
+				res.push_back(e.elem);
+		}
+
+		return res;
+
+	}
+
+########## PROB HARD 22 maximum profit by selling a stock atmost twice ########## 
+
+
+	//using DP, time & space - O(n)
+	int maxProfit(vector <int> price){
+		int n = price.size();
+		vector <int> profit(n);
+
+		profit[n-1] = 0;
+		int max_price = price[n-1];
+
+		//from right to left    
+		for (int i=n-2;i>=0;i--){
+			max_price = max(max_price, price[i]);
+			profit[i] = max(profit[i+1], max_price - price[i]);
+		}
+
+		int min_price = price[0];
+		for (int i = 1;i<n;i++){
+			min_price = min(min_price, price[i]);
+			if (i+1<n)
+				profit[i] = max(profit[i-1], profit[i+1] + (price[i]-min_price));
+			else
+				profit[i] = max(profit[i-1], price[i]-min_price);
+		}
+
+		return profit[n-1];
+	}
+
+	//valley peak approach, this wont work in this case since here only two transactions are allowed
+	//this will work when we have unlimited transactions
+	int maxProfit2(vector <int> price){
+		int n  = price.size();
+
+		// valley-peak approach
+		/*
+						   80
+						   /
+			30            /
+		   /  \          25
+		  /    15       /
+		 /      \      /
+		2        10   /
+				   \ /
+					8
+		*/
+
+		//this basically adds all of the uphill difference i.e 2 - 30,  8 - 80
+		int profit = 0;
+		for (int i=1;i<n;i++){
+			if (price[i]>price[i-1]){
+				profit += price[i]-price[i-1];
+			}
+		}
+		return profit;
+	}
+
+	//THis is the most optimal soln, time O(n), space O(1)
+	//difficult to understand
+	int maxtwobuysell(int arr[],int size) {
+		int first_buy = INT_MIN;
+		  int first_sell = 0;
+		  int second_buy = INT_MIN;
+		  int second_sell = 0;
+		   
+		  for(int i=0;i<size;i++) {
+			 
+			  first_buy = max(first_buy,-arr[i]);//we set prices to negative, so the calculation of profit will be convenient
+			  first_sell = max(first_sell,first_buy+arr[i]);
+			  second_buy = max(second_buy,first_sell-arr[i]);//we can buy the second only after first is sold
+			  second_sell = max(second_sell,second_buy+arr[i]);
+		   
+		}
+		 return second_sell;
+	}
+
+
+	// max profit when k transactions are allowed 
+
+	//this is my wrong soution , inspired by valley-hill approach
+	int maxProfitKTransactions(vector <int> v, int k){
+
+		//top k transactions
+		int i = 0, n = v.size();
+
+		//min_heap of size k
+		priority_queue <int, vector<int>, greater<int>> min_heap;
+
+		while(i<n){
+			int low = v[i];
+			i++;
+			while(i<n && v[i] > v[i-1]){
+				i++;
+			}
+			i--;
+			//i is at the high
+			int high = v[i];
+			if (min_heap.size() < k){
+				min_heap.push(high-low);
+			}else{
+				if (min_heap.top() < (high-low)){
+					min_heap.pop();
+					min_heap.push(high-low);
+				}
+			}
+
+			//now go to bottom
+			i++;
+			while(i<n && v[i] < v[i-1]){
+				i++;           
+			}
+			if (i == n) break;
+			i--;
+		}
+		int res = 0;
+
+		while(min_heap.empty() == false){
+			res += min_heap.top();
+			min_heap.pop();
+		}
+
+		return res;
+	}
+
+	//maximum k transactions , using DP
+	//complexity O(k*n*n)
+	/*
+		 * Time complexity is O(k * number of days ^ 2)
+		 * T[i][j] = max(T[i][j-1], max(prices[j] - prices[m] + T[i-1][m])) where m is 0...j-1
+		 */
+	int dpSolution1(vector <int> prices, int k){
+		int n = prices.size();
+		vector <vector <int>> dp(k+1, vector <int> (n, 0));
+
+		for (int i=1;i<=k;i++) { //i = transactions
+			for (int j=1; j<n;j++){ //j = days
+				int res = dp[i][j-1]; //not making transaction on day j
+				for (int m=0;m<j;m++){ //m = days before j
+					res = max(res, prices[j]-prices[m] + dp[i-1][m]);
+				}
+				dp[i][j] = res;
+			}
+		}
+		return dp[k][n-1];
+	}
+
+	//optimized dp solution 
+	//complexity O(k*n)
+	/*
+		 * Formula is
+		 * T[i][j] = max(T[i][j-1], prices[j] + maxDiff)
+		 * maxDiff = max(maxDiff, T[i-1][j] - prices[j])
+		 */
+	int dpSolution2(vector <int> prices, int k){
+		int n = prices.size();
+		vector <vector <int>> dp(k+1, vector <int> (n, 0));
+
+		for (int i=1;i<=k;i++){
+			int max_diff = -prices[0];
+			for (int j=1;j<n;j++){
+				dp[i][j] = max(dp[i][j-1], prices[j]+max_diff);
+				max_diff = max(max_diff, dp[i-1][j] - prices[j]);
+			}
+			// max_diff = max(max_diff, prices[j] - dp[i][]);
+		}
+
+		return dp[k][n-1];
+	}
+
+########## PROB 23 if array is subset of another array ##########  
+
+
+	bool isSubset(vector <int> a, vector <int> b){
+		//check if b is subset of a
+		unordered_set <int> mp;
+		for (auto x:a)
+			mp.insert(x);
+		
+		for (auto x:b){
+			if (mp.find(x) == mp.end())
+				return false;
+		}
+		return true;
+	}
+
+########## PROB 24 find triplet sum ########## 
+
+
+	//complexity nlogn + O(n^2)
+	bool findTripletSum1(vector <int> v, int sum){
+
+		int n = v.size();
+		sort(v.begin(), v.end());
+
+		for (int i=0;i<n;i++){
+			int rem = sum - v[i];
+
+			for (int s = i+1, e = n-1; s<e;){
+				int temp = v[s] + v[e];
+				if (temp == rem)
+					return true;
+				else if (temp > rem)
+					e--;
+				else
+					s++;
+			}
+		}
+		return false;
+	}
+
+
+	//using hashing
+	bool findTripletSum2(vector <int> v, int sum){
+
+		int n = v.size();
+
+		for (int i=0;i<n;i++){
+			int curr_sum = sum - v[i];
+			unordered_set<int> mp;
+
+			for (int j = i+1;j<n;j++){
+				if (mp.find(curr_sum-v[j])!= mp.end()){
+					return true;
+				}
+				mp.insert(v[j]);
+			}
+		}
+		return false;
+	}
+
+########## PROB 25 trapping rain water  ########## 
+
+	Given n non-negative integers representing an elevation map where the
+	width of each bar is 1, compute how much water it is able to trap 
+	after raining.
+
+	Input: arr[]   = {3, 0, 2, 0, 4}
+	Output: 7
+
+	//using extra space 
+	int trappingWater(vector <int> v){
+
+		int n = v.size();
+		vector <int> temp(n, 0);
+
+		temp[0] = v[0];
+
+		for (int i=1;i<v.size();i++){
+			temp[i] = max(temp[i-1], v[i]);
+		}
+
+		int res = 0;
+		int max_right = v[n-1];
+
+		for (int i=n-2;i>0;i--){
+			int min_ht = min(max_right, temp[i-1]);
+			if (min_ht > v[i]){
+				res += min_ht - v[i];
+			}
+			max_right = max(max_right, v[i]);
+		}
+
+		return res;
+	}
+
+	//without any extra space
+	int trappingWater2(vector <int> v){
+		int n = v.size();
+		int max_left = 0;
+		int max_right = 0;
+
+		int res = 0;
+
+		for (int l = 0, r = n-1; l<r;){
+			if (v[l] < v[r]){
+
+				if (v[l] > max_left){
+					max_left = v[l];
+				}else{
+					res += max_left - v[l];
+				}
+				l++;
+			}else{
+
+				if (v[r] > max_right){
+					max_right = v[r];
+				}else{
+					res += max_right - v[r];
+				}
+				r--;
+			}
+		}
+		return res;
+	}
+
+########## PROB 26 chocolate distributions ########## 
+
+	Given an array of n integers where each value represents the number 
+	of chocolates in a packet. Each packet can have a variable number 
+	of chocolates. There are m students, the task is to distribute
+	chocolate packets such that: 
+
+		-Each student gets one packet.
+		-The difference between the number of chocolates in the packet
+		with maximum chocolates and packet with minimum chocolates given
+		to the students is minimum.
+
+
+	Input : arr[] = {7, 3, 2, 4, 9, 12, 56} , m = 3 
+	Output: Minimum Difference is 2 
+	Explanation:
+	We have seven packets of chocolates and 
+	we need to pick three packets for 3 students 
+	If we pick 2, 3 and 4, we get the minimum 
+	difference between maximum and minimum packet 
+	sizes.
+
+	int chocholateDistribution(vector <int> v, int m){
+		int n = v.size();
+		sort(v.begin(), v.end());
+
+		int res = v[m-1] - v[0];
+		for (int i=1 ; i<=n-m ; i++){
+			if (v[i+m-1] - v[i] < res){
+				res = v[i+m-1] - v[i];
+			}
+		}
+		return res;
+	}
+
+########## PROB 27  smallest sub array with sum larger than given value ########## 
+
+	arr[] = {1, 4, 45, 6, 0, 19}
+    x  =  51
+	Output: 3
+	Minimum length subarray is {4, 45, 6}
+
+	arr[] = {1, 10, 5, 2, 7}
+	   x  = 9
+	Output: 1
+	Minimum length subarray is {10}
+
+	int minLength(vector <int> v, int sum){
+		int n = v.size();
+		int s = 0, e = 0;
+
+		int cur_sum = 0;
+		int res = n;
+		while (e<n) {
+			cur_sum += v[e++];
+
+			cur_sum -= v[s++];
+			while (s<e && cur_sum > sum){
+				cur_sum -= v[s]; 
+				s++;
+			}
+			cur_sum += v[--s];
+
+			if (cur_sum > sum){
+				res = min(e-s, res);
+			}
+		}
+
+		if (cur_sum < sum)
+			return -1;
+		return res;
+	}
+
+
+	//better way of writing the loop
+	int smallestSubWithSum(int arr[], int n, int x)
+	{
+		// Initialize current sum and minimum length
+		int curr_sum = 0, min_len = n + 1;
+	 
+		// Initialize starting and ending indexes
+		int start = 0, end = 0;
+		while (end < n) {
+			// Keep adding array elements while current sum
+			// is smaller than or equal to x
+			while (curr_sum <= x && end < n)
+				curr_sum += arr[end++];
+	 
+			// If current sum becomes greater than x.
+			while (curr_sum > x && start < n) {
+				// Update minimum length if needed
+				if (end - start < min_len)
+					min_len = end - start;
+	 
+				// remove starting elements
+				curr_sum -= arr[start++];
+			}
+		}
+		return min_len;
+	}
+
+
+	//when array contains negative values too
+	int smallestSubWithSumNeg(vector<int> arr, int n, int x)
+	{
+		// Initialize current sum and minimum length
+		int curr_sum = 0, min_len = n + 1;
+	 
+		// Initialize starting and ending indexes
+		int start = 0, end = 0;
+		while (end < n) {
+			// Keep adding array elements while current sum
+			// is smaller than or equal to x
+			while (curr_sum <= x && end < n){
+				curr_sum += arr[end++];
+				if (curr_sum < 0){
+					curr_sum = 0;
+					start = end;
+				}
+			}
+	 
+			// If current sum becomes greater than x.
+			while (curr_sum > x && start < n) {
+				// Update minimum length if needed
+				if (end - start < min_len)
+					min_len = end - start;
+	 
+				// remove starting elements
+				curr_sum -= arr[start++];
+			}
+		}
+		return min_len;
+	}
+	 
+
+	int minLengthNeg(vector <int> v, int sum){
+		int n = v.size();
+		int s = 0, e = 0;
+
+		int cur_sum = 0;
+		int res = n;
+		while (e<n) {
+			cur_sum += v[e++];
+			if (cur_sum < 0 ){
+				cur_sum = 0;
+				s = e;
+			}
+			else{
+				cur_sum -= v[s++];
+				while (s<e && cur_sum > sum){
+					cur_sum -= v[s]; 
+					s++;
+				}
+				cur_sum += v[--s];
+
+				if (cur_sum > sum){
+					res = min(e-s, res);
+				}
+			}
+		}
+
+		return res;
+	}
+
+########## PROB 28 three way partitioning ########## 
+
+	Given an array and a range [lowVal, highVal], partition the array around the range such that array is divided in three parts. 
+	1) All elements smaller than lowVal come first. 
+	2) All elements in range lowVal to highVVal come next. 
+	3) All elements greater than highVVal appear in the end. 
+	The individual elements of three sets can appear in any order.
+
+	Input: arr[] = {1, 14, 5, 20, 4, 2, 54, 20, 87, 98, 3, 1, 32}  
+			lowVal = 14, highVal = 20
+	Output: arr[] = {1, 5, 4, 2, 1, 3, 14, 20, 20, 98, 87, 32, 54}
+
+	//one solution would be to use partition algo of quick sort two times,
+	//first time we will keep low val as pivot 
+	//second time keep high val as pivot
+	//complexity is O(n) but it requires multiple iterations
+
+
+	//it can be done in single iteration like this
+
+	void threeWayPartition3(vector <int> &v, int lowVal, int highVal){
+
+		int start = 0, end = v.size()-1;
+
+		for (int i=0;i<=end;){
+			if (v[i] < lowVal){
+				swap(v[i++], v[start++]);
+			}
+			else if(v[i] > highVal){
+				swap(v[i], v[end--]);
+			}else
+				i++;
+		}
+
+		return ;
+	}
+
+########## PROB 29 Minimum swaps required to bring all elements less than or equal to k together ########## 
+
+	Input:  arr[] = {2, 1, 5, 6, 3}, k = 3
+	Output: 1
+
+	Explanation: 
+	To bring elements 2, 1, 3 together, swap 
+	element '5' with '3' such that final array
+	will be-
+	arr[] = {2, 1, 3, 6, 5}
+
+	Input:  arr[] = {2, 7, 9, 5, 8, 7, 4}, k = 5
+	Output: 2
+
+	int minSwapsToBringLessThanKTogether(vector <int> v, int k){
+
+		int n = v.size();
+		int count = 0;
+		for (auto x:v){
+			if (x <= k)
+				count++;
+		}
+
+		int min_swaps = INT_MAX;
+
+		for (int i = 0;i<n;i++){
+			int cur_swaps = 0, j;
+			for ( j = i;j<i+count;j++){
+				if (v[j] > k){
+					cur_swaps++;
+				}
+			}
+			min_swaps = min(min_swaps, cur_swaps);
+			i = j;
+		}
+
+		return min_swaps;    
+	}
+
+
+	//correct solution
+	int minSwap(int *arr, int n, int k) {
+		 
+		// Find count of elements which are
+		// less than equals to k
+		int count = 0;
+		for (int i = 0; i < n; ++i)
+			if (arr[i] <= k)
+				++count;
+		 
+		// Find unwanted elements in current
+		// window of size 'count'
+		int bad = 0;
+		for (int i = 0; i < count; ++i)
+			if (arr[i] > k)
+				++bad;
+		 
+		// Initialize answer with 'bad' value of
+		// current window
+		int ans = bad;
+		for (int i = 0, j = count; j < n; ++i, ++j) {
+			 
+			// Decrement count of previous window
+			if (arr[i] > k)
+				--bad;
+			 
+			// Increment count of current window
+			if (arr[j] > k)
+				++bad;
+			 
+			// Update ans if count of 'bad'
+			// is less in current window
+			ans = min(ans, bad);
+		}
+		return ans;
+	}
+
+########## PROB 30 minimum operations required to make array palindrome ########## 
+
+	Input : arr[] = {15, 4, 15}
+	Output : 0
+	Array is already a palindrome. So we
+	do not need any merge operation.
+
+	Input : arr[] = {1, 4, 5, 1}
+	Output : 1
+	We can make given array palindrome with
+	minimum one merging (merging 4 and 5 to
+	make 9)
+
+	Input : arr[] = {11, 14, 15, 99}
+	Output : 3
+	We need to merge all elements to make
+	a palindrome.
+
+	int helper(vector <int> &v, int &s, int &e){
+		int left = v[s++];
+		int right = v[e--];
+		int ops = 0;
+
+		if (left == right)
+			return ops;
+
+		while(s<=e){
+
+			if (left < right){
+				left+= v[s++];
+				ops++;
+			}else{
+				right += v[e--];
+				ops++;
+			}
+
+			if (left == right){
+				return ops;
+			}
+		}
+
+		ops++;
+		return ops;
+	}
+
+	int minimumOps(vector <int> v){
+		int i =0, j= v.size()-1;
+		// int i = 0, j = 5;
+		int ops = 0;
+		while(i<j){
+			if (v[i] == v[j]){
+				i++;
+				j--;
+			}else{
+				ops += helper(v, i, j);
+			}
+		}
+		return ops;
+	}
+
+	//betterway to write 
+	int findMinOps(int arr[], int n)
+	{
+		int ans = 0; // Initialize result
+	 
+		// Start from two corners
+		for (int i=0,j=n-1; i<=j;)
+		{
+			// If corner elements are same,
+			// problem reduces arr[i+1..j-1]
+			if (arr[i] == arr[j])
+			{
+				i++;
+				j--;
+			}
+	 
+			// If left element is greater, then
+			// we merge right two elements
+			else if (arr[i] > arr[j])
+			{
+				// need to merge from tail.
+				j--;
+				arr[j] += arr[j+1] ;
+				ans++;
+			}
+	 
+			// Else we merge left two elements
+			else
+			{
+				i++;
+				arr[i] += arr[i-1];
+				ans++;
+			}
+		}
+	 
+		return ans;
+	}
+
+########## PROB 31 find median of two sorted array of equal size ########## 
+
+	//complexity - O(logn)
+
+	int median(int arr[], int s, int e){
+		return (arr[(s+e)/2] + arr[(s+e+1)/2])/2; 
+	}
+
+	int findMedianOf2Sorted(int a[], int b[], int sa, int ea,int sb, int eb){
+
+		if (ea - sa <= 1){ 
+			//[1,3] [2,4] --- [1,2,3,4]
+			return (max(a[sa], b[sa]) + min(a[ea], b[eb]))/2;
+		}
+		else{
+			int m1 = median(a, sa, ea);
+			int m2 = median(b, sb, eb);
+
+			if (m1 == m2)
+				return m1;
+			else if (m1 < m2){
+
+				return findMedianOf2Sorted(a, b, (sa + ea + 1)/2, ea, sb, (sb + eb + 1)/2);
+			}
+			else
+				return findMedianOf2Sorted(a, b, sa, (sa + ea +1)/2, (sb + eb +1)/2 , eb);
+
+		}
+
+	}
+
+########## PROB 32 find median of two sorted arrays of unequal size ########## 
+	
+	complexity - logn
+
+	double medianSortedUnequalSize(vector <int> arr1, vector <int> arr2){
+
+		int n1 = arr1.size();
+		int n2 = arr2.size();
+
+		if (n2 < n1) return medianSortedUnequalSize(arr2, arr1);
+
+		int n = (arr1.size() + arr2.size()+1)/2;
+		int low = 0, high = n1-1;
+
+		while (low <= high){
+			int cut1 = (low + high)/2;
+
+			int cut2 = n - (cut1+1) - 1;
+
+			int left1 = cut1 < 0 ? INT_MIN : arr1[cut1];
+			int left2 = cut2 < 0 ? INT_MIN : arr2[cut2];
+
+			int right1 = cut1 + 1 > n1 ? INT_MAX : arr1[cut1+1];
+			int right2 = cut2 + 1 > n2 ? INT_MAX : arr2[cut2+1];
+
+			//cross check
+			if (left1 <= right2 && left2 <= right1){
+				if ((n1 + n2)%2 == 0){
+					return (max(left1, left2) + min(right1, right2))/2.0;
+				}
+				return max(left1, left2);
+			}else if (left1 > right2){
+				high = cut1-1;
+			}else{
+				low = cut1+1;
+			}
+
+		}
+		return 0.0;
+	}

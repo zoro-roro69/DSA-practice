@@ -1,0 +1,25 @@
+
+connected graph
+    connected graph is a graph in which from the given node we can reach all other nodes
+
+    example
+        1 -- 2 -- 3
+                  |
+             4 ---
+
+        this is a connected graph if we start from 1 we can reach all the nodes
+
+    
+disconnected graph
+    a graph is disconnected if from the given node we cannot reach all other nodes
+
+    example
+
+        1--2--3--4      5--6--7     8---9---10
+
+        This is a single graph with 3 connected components
+
+        if we start from 1 then we cannot reach all other nodes, since there is no
+        edge between 4 and 5, similarly no edge between 7 and 10
+
+

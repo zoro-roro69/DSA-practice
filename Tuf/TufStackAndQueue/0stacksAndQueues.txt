@@ -1,0 +1,71 @@
+// 1. stack stack using arrays
+// 	
+// 	simple just keep maintaining pointer at end
+//
+// 2. queue using arrays
+//
+// 	 maintain circular array
+// 	 inititally start =-1, end =-1
+//
+//        push
+// 		if queue not full
+// 			end = (end+1)%n;
+// 			then add at end
+// 		
+// 		how to check if queue is full ? if start == end && start!=-1
+//
+//        pop
+// 		res = start
+// 		start = (start+1)%n;
+//
+// 3. stack using single queue
+// 	
+// 	push O(N)
+// 		
+// 		first push current element at end of queue
+// 		then for first n-1 elments remove and add at back
+//
+// 		after this the latesst element is at front of queue
+//
+// 	pop O(1)
+// 		remove and return first element from the queue
+//
+//
+// 4. queue using two stacks (IMPORTANT)
+//
+// 	4.1 we make push operation O(N)
+// 	
+// 		push
+//
+// 			stack 1 will have the elements in correct order, i.e oldest will be at top
+// 		
+// 			so one by one move all elements from stack1 to stack2
+// 		
+// 			now stack 1 is empty so add the new element to it.
+//
+// 			now transfer back all the elements from stack 2 to stack1
+//
+// 		
+// 		pop
+// 		
+// 			remove top element from stack 1 :)
+// 		
+// 	
+//
+// 	4.2 we make pop operation O(N), amortized O(1)
+// 	
+// 	
+// 		push
+// 		
+// 			push to stack 1
+// 			
+// 			
+// 		pop O(N) if stack 1 contains elements, O(1) if stack 1 is empty
+// 			
+// 			remove all the elements ffrom stack 1 and move to stack 2
+// 			
+// 			after that remove top of stack 2 :)
+// 			
+// 		
+// 		Note - in this case for succesive pop calls , stack1 will alawys be empty
+// 			and we just need to return top of stack 2. so in this case complexity is O(1)
