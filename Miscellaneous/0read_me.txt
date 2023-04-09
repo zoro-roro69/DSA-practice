@@ -412,3 +412,158 @@
                     if cur node is 2 then insert at end
 
 
+########## Microsoft Exp - 3
+
+##### 3_1 recover a tree from preorder traversal string
+    link - https://leetcode.com/problems/recover-a-tree-from-preorder-traversal/solutions/274633/c-simple-recursive-preorder/
+        
+    // "1-2--3--4-5--6--7"
+    //dashes represent the current level/depth of current node       
+    // string above represents this tree
+            1
+        2       5
+     
+    3       4 6     7
+
+
+    The idea is pretty simple, at each depth make sure that the number
+    of '-' is same as the depth, if it's not return NULL else continue 
+    the recursive preorder traversal.
+
+    In general the preorder traversal through recursion is:
+    #snippet
+
+        void preorder(Treenode* root)
+        {   
+            //first part - processing current node
+            if(!root)
+            {
+                cout<<"NULL";
+                return;
+            }
+            cout<<root->val;
+
+            //second part - recurssion for left and right
+            preorder(root->left);
+            preorder(root->right);
+        }
+
+    What we are doing here is the same, just imagine the string is in form of a tree and 
+    make sure that the boundaries for print(case above)/set root->val(this case) or returning/printing 
+    NULL are set right (according to the question).
+
+
+    int i=0; //global index of string s
+    TreeNode* solve(int d,string &s){ //d is the current depth
+
+        //first part - processing current node
+
+        if(i>=s.length())return NULL;
+        string str="";
+        int x=0; //x will store depth of this node
+        int st=i; //storing previous posititon of i, if we need to reset i 
+        while(s[i]=='-'){
+            i++;
+            x++;
+        }
+        if(x!=d){ //if current depth is not equal to depth of this node, so return NULL
+            i=st; //reset i
+            return NULL;
+        }
+        while(i<s.length()&&s[i]!='-'){ //extract the num at current node
+            str+=s[i];
+            i++;
+        }
+        
+        int val=stoi(str);
+        TreeNode* temp=new TreeNode(val);
+
+
+        //second part - recurssion for left and right
+
+        temp->left=solve(d+1,s);
+        temp->right=solve(d+1,s);
+        return temp;
+    }
+    TreeNode* recoverFromPreorder(string s) {
+        return solve(0,s);
+    }
+
+##### 3_2 given array of coins, get max number of coins you can pick
+    
+    Question 1: Given an array of repressing gold coins at each position, for any position you can take 
+    half of the value at that index an infinite number of times. You have k chances, 
+    find the max gold coin you can collect.
+
+    solution
+
+        1. Put all values in a priority queue.
+        2. do this for k times:
+            2.1 pick top of the queue.
+            2.2 take add half of top to the result.
+            2.3 remove top from priority queue
+            2.4 add top/2 to priority queue
+
+##### 3_3 Iterative Letter Combinations of a Phone Number
+
+    link - https://www.geeksforgeeks.org/iterative-letter-combinations-of-a-phone-number/
+
+    Given an integer array containing digits from [0, 9], the task is to print all possible 
+    letter combinations that the numbers could represent. 
+
+    A mapping of digit to letters (just like on the telephone buttons) is being followed. Note
+    that 0 and 1 do not map to any letters.
+
+    mappings:
+        vector <string> mp { 
+                            "0", //0
+                            "1", //1
+                            "abc", //2
+                            "def", //3
+                            "ghi", //4
+                            "jkl", //5
+                            "mno", //6
+                            "pqrs", //7
+                            "tuv", //8
+                            "wxyz" //9
+                            };
+
+    Input: nums[] = {2, 3} 
+    Output: ad ae af bd be bf cd ce cf
+
+    Input: nums[] = {9} 
+    Output: w x y z 
+
+        3_3_1 Using DFS and backtracking
+            let say the given input arr is nums
+
+            we start from i = 0;
+            
+            if (i >= nums.size())
+                we have generated the cur_str, and add it to solution
+            else
+                for ch in mp[nums[i]]:
+                    cur_str += ch
+                    f(i+1, cur_str); //recursive call
+                    cur_str.pop_back(); //backtrack
+
+        3_3_2 Using BFS
+
+            we start from empty string ""
+
+            add "" to the queue;
+            while queue not empty:
+                front = q.front() q.pop();
+                if (front.size() == nums.size())
+                    add front to res;
+                else
+                    for ch in mp[front.size()]:
+                        temp = front + ch;
+                        queue.push_back(temp);
+
+            return res;
+
+##### 3_4  LLD round, was asked to implement malloc() and free() functions for Linux
+##### 3_5  LLD round, was asked to implement a rate limiter, to allow only 100 requests per second from a unique IP.
+    
+
