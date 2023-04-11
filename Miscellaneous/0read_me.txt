@@ -566,4 +566,125 @@
 ##### 3_4  LLD round, was asked to implement malloc() and free() functions for Linux
 ##### 3_5  LLD round, was asked to implement a rate limiter, to allow only 100 requests per second from a unique IP.
     
+########## Microsoft Exp - 4
+
+##### 4_1 search an element in infinite sorted array
+
+    the array is sorted but we do not know the size of the array.
+    so we cannot directly apply binary search.
+
+    so the basic idea is inititally take some range based on your choice lets say the range is 100
+    so i will set my low as 0 and high = 100, then i will compare the element with the element at index high
+    if element < arr[high]:
+        apply binarySearch(low, high, element);
+    else 
+        set low = high
+        high = 2*high
+    repeat above steps until elment is found
+
+    generaly the in starting the high is intialised as '0', then as search progresses we keep on doubling
+    it.
+
+    Complexity analysis:
+        Let p be the position of element to be searched. Number of steps for finding 
+        high index ‘h’ is O(Log p). The value of ‘h’ must be less than 2*p. 
+        The number of elements between h/2 and h must be O(p). Therefore, time complexity of 
+        Binary Search step is also O(Log p) and overall time complexity is 2*O(Log p) which is O(Log p).
+
+##### 4_2 merge two unsorted arrays int sorted array.
+
+    let size of arr1  = n
+    let size of arr2 = m
+
+    4_2_1 method 1 would be to concatenate both arrays and then sort 
+        
+        complexity in this case:
+            = merging + sorting array of size n+m
+            = n+m + (n+m)log(n+m)
+            = n+m + nlog(n+m) + mlog(n+m)
+        
+    4_2_2 method 2 would be to sort them individually and then merge
+
+        complexity in this case:
+            = sorting arr1 + sorting arr2 + merging
+            = nlog(n) + mlog(m) + n+m
+
+    so clearly method two is better i.e first sort and then merge
+
+##### 4_3 design how will you implement the most viewed bar in bing search, different approaches
+
+        just like we do in SWC professional,
+        create a heap , store the references of the elements in heap in a table
+
+##### 4_4 check if two rectangles overlap
+
+    // Returns true if two rectangles (l1, r1) and (l2, r2)
+    // overlap
+        bool doOverlap(Point l1, Point r1, Point l2, Point r2)
+        {
+            // if rectangle has area 0, no overlap
+            if (l1.x == r1.x || l1.y == r1.y || r2.x == l2.x || l2.y == r2.y)
+                return false;
+        
+            // If one rectangle is on left side of other
+            if (l1.x > r2.x || l2.x > r1.x)
+                return false;
+        
+            // If one rectangle is above other
+            if (r1.y > l2.y || r2.y > l1.y)
+                return false;
+        
+            return true;
+        }
+
+##### 4_5 Length of the longest substring without repeating characters
+
+    this question is similar to "find the first non repeating character"
+
+    we maintain a map to store currently seen car chars (use arr of size 26, if only small alphabets allowed)
+
+    we also maintain a 'start' variable which basically contains the starting point of current
+    substring
+    initially start = 0
+    also set len = 0 //length of current substring
+    res = 0 //to store the max length
+    we loop through all the chars starting from left to right
+
+    1. if the char is not in map
+        this char is not seen before
+        we add it in map
+        len++
+        res = max(len, res)
+    2. if char is in the map
+        //this char is already seen before
+
+        consider this example :
+            start = 0
+            abcdefgh 'c'
+
+            here 'c' is the current char,
+            we can see that 'c' has already occrued before
+            so we now we shift our window, after the previous occurence of 'c'
+            lets say if current window is:
+
+                [abcdefgh]c ....
+
+            now we shift our window and it becomes:
+
+                abc[defghc] ....
+
+            to shift our window we need to do few things 
+                1. since we our sifting our window, so we need to remove the elements from the map
+                    from start to elment before the repeating char
+                    in above example chars from a to b will be marked unvsited/removed
+
+                2. update the start
+                    start which was previously at 'a' will now be at 'd' (1 after the repeating char)
+                
+                3. update the length
+                    update len to size of new window
+                    len = i - start + 1
+
+##### 4_6 reverse linked list in group of size k
+
 
