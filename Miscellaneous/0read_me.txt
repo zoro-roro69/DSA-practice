@@ -687,4 +687,148 @@
 
 ##### 4_6 reverse linked list in group of size k
 
+    check the code directly for better understanding :)
+
+##### 4_7 max product subarray
+
+    given an array find the max product subarray.
+
+    example:
+        arr - [4,5,6,0,-10,20,10]
+
+        ans: 200
+
+    4_7_1 using algo similar to kadanes (for max sum subarray), but with two traversals 
+
+        this version is like the kadanes algo the only difference is that we need to traverse
+        from left to right and then from right to left.
+
+        lets say when array contains even number of -ves, then simply the product of all elements gives max prod
+        but when we have odd number of -ves, now we cannot take product of all elements since final prod will
+        be -ve.
+
+        so we need to leave either the first -ve or the last -ve (as seen from left)
+        when we traverse from left to right, we are automatically including first and excluding last.
+        when we do reverse traversal (right to left) we automatically exclude first
+
+        lets say in between we get 0, just like in kadanes algo we make the prod till now to be 1
+
+        our result will be the maximum prod. we got among two traversals
+
+            max_prod = nums[0];
+            //left to right
+            for (int i=1;i<nums.size();i++){
+                prod = prod * nums[i];
+                max_prod = max(max_prod, prod);
+
+                if (prod == 0)
+                    prod = 1;
+            }
+
+            //right to left
+            prod = 1;
+            for (int i = nums.size()-1; i>=0; i--){
+                prod = prod*nums[i];
+                max_prod = max(max_prod, prod);
+
+                if (prod == 0)
+                    prod = 1;
+            }
+
+    4_7_2  in this method we maintain, max prod till now and min prod till now
+
+        int max_prod = nums[0];
+        int max_ending_here = nums[0];
+        int min_ending_here = nums[0];
+
+        for (int i=1;i<nums.size();i++){
+            int temp = max(max(nums[i], max_ending_here*nums[i]), min_ending_here*nums[i]);
+            min_ending_here = min(min(nums[i], max_ending_here*nums[i]), min_ending_here*nums[i]);
+
+            max_ending_here = temp;
+
+            max_prod = max(max_ending_here, max_prod);        
+        }
+
+        return max_prod;
+
+##### 4_8 building bridges across citites seperated by horizontal river (Dynamic Programming)
+
+    Consider a 2-D map with a horizontal river passing through its center.
+
+    we are given cities in pair from north and south bank
+    There are n cities on the northern bank with x-coordinates a(1) … a(n)
+    and n cities on the southern bank with x-coordinates b(1) … b(n). 
+
+    we can only connect city at coord a[i] with city at coord b[i]
+
+    Exmaple:
+        coordinate of north bank: 6 4 2 1
+        coordinate of south bank: 2 3 6 5
+
+    possible bridges we can create are (6,2) or (4,3), (2,6) (1,5)
+
+    but while creating bridges we need to make sure that no two bridges overlap
+
+    example:
+
+        after creating the bridge (6,2) , we can no longer create any other bridge 
+        as it will overlap.
+        bridge (4,3) overlaps with (6,2) so it is not valid
+
+            WRONG
+
+            1       2       3       4       5       6
+                                    +               +
+                                    |               |
+                    +-------------------------------+
+                    |               |
+                    |       +-------+
+                    +       +
+            1       2       3       4       5       6
+
+
+    lets try another configuration, here we create the bridge, (1,5) and (2,6).
+    since they do not overlap so they are valid
+
+        CORRECT
+
+        1       2       3       4       5       6
+        +       +
+        |       +-------------------------------+
+        |                                       |
+        +-------------------------------+       |
+                                        |       |
+                                        +       +
+        1       2       3       4       5       6
+
+
+    we need to return max number bridges we can create without any overlap
+
+    in above example the answer is = 2
+
+    solution:
+
+        Using LIS.
+
+        1. first sort the pairs (north-x, south-x) based on south x coordinates.
+        2. then apply LIS on the (north-x).
+            the LIS on x is your answer
+
+    coordinate of north bank: 6 4 2 1
+    coordinate of south bank: 2 3 6 5
+
+    lets sort according to south
+
+        noth-     6 4 1 2
+        south-    2 3 5 6
+
+    now LIS on north
+
+        6 4 1 2
+
+        here we can see the longest increasing subsequence is 2 ( formed by 1 and 2)
+        which is our answer.
+
+        so we can create 1-5 and 2-6 bridge without overlap
 
