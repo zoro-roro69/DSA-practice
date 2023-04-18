@@ -414,6 +414,8 @@
 
 ########## Microsoft Exp - 3
 
+    link - https://www.geeksforgeeks.org/microsoft-interview-experience-for-sde-3/
+
 ##### 3_1 recover a tree from preorder traversal string
     link - https://leetcode.com/problems/recover-a-tree-from-preorder-traversal/solutions/274633/c-simple-recursive-preorder/
         
@@ -567,6 +569,7 @@
 ##### 3_5  LLD round, was asked to implement a rate limiter, to allow only 100 requests per second from a unique IP.
     
 ########## Microsoft Exp - 4
+    link - https://www.geeksforgeeks.org/microsoft-idc-interview-experience-set-69-for-sde/?ref=rp
 
 ##### 4_1 search an element in infinite sorted array
 
@@ -831,4 +834,8 @@
         which is our answer.
 
         so we can create 1-5 and 2-6 bridge without overlap
+
+########## Microsoft Exp - 5
+
+    link - https://www.geeksforgeeks.org/microsoft-idc-interview-experience-set-88-sde-1/?ref=rp
 
