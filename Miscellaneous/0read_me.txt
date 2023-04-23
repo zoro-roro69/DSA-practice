@@ -839,3 +839,183 @@
 
     link - https://www.geeksforgeeks.org/microsoft-idc-interview-experience-set-88-sde-1/?ref=rp
 
+
+##### 5_1 subarray sum closest to 0.
+
+    Note- this is different from subsequence/subset sum, that one is done using DP
+
+    similar to finding subarray sum equal to 'K'
+
+        when we dont have -ve elements use sliding window
+        when we have -ve elements we cannot use sliding window approach
+            - instead we use map, we traverse from left to right and store presum or the sum till now in map
+                also we check if the difference  = sum_till_now - k exists in the map or not
+                if it does then we found our answer
+
+    for finding subarray sum closes to 'k'
+        we use  " ordered map " (set) instead of regular hash map
+        - we do the same as above save sum till now in map, and in the map we check for lowerbound of the difference
+        - note the lower bound gives the element >= then our key, if key == element then no problem.
+            but if key > elemment, then we need to decrement the iterator returned by lower bound, and check
+            if that element is more closer to 'k' or not
+
+##### 5_2 find LCA in Binary Tree
+
+    Complexity for LCA in BST - O(logn)
+    Complexity for LCA in Binary tree - O(n)
+
+##### 5_3 clone list with next and random pointer
+
+    first modify the original list, after every actual node create and insert its clone
+
+    example
+        original list
+
+            node1 ----> node2 ----> node3 ----> node4 ---> node5
+
+        modified list
+
+            node1 -----> clone1 ---> node2 ---> clone2 --->node2 ---> clone4 --- and so on
+
+    now we set set the random pointer in the cloned nodes
+
+    inititalise head1 = node1, head2 = clon1 (head of clone list)
+
+    now from above we know that next of actual node points to its clone
+
+        so clone->random = actual->random->next
+    
+    now in the final step remove the links between actual and clone nodes
+    i.e
+
+        clone1 -> clone2 -> clone3 -> clone4
+        node1  -> node2  -> node3  -> node4
+
+    you are done
+
+##### 5_4 find union and intersection of two strings
+
+##### 5_5 find max element in array which is first increasing and then decreasing
+
+    apply binary search, check if mid is part of the fist half(insreasing sequence)
+    or it is part of the second half (descreasing sequence). and move start and end accordingly
+
+    if (arr[mid] > arr[mid-1]) //part of first haf
+    else //part of second half
+
+##### 5_6 check if number if power of 2
+
+    HINT- all numbers that are power of 2 only have one set bit
+
+##### 5_7 check whether lnnked lsit is circular
+
+##### 5_8  check whether two trees are identical
+
+
+########## Microsoft Exp 6
+
+##### 6_1 convert binary tree to DLL.
+
+    6_1_1 my own recursive approach approach
+
+        To convert a binary tree to DLL, what we need to do is basically connect every node to its
+        inorder succesor. and to do this we will use a recursive approach
+
+        In the helper function below we are doing two main things
+        1. first is finding the leftmost node in this subtree, which will be the succesor of the parent node.
+        2. second is finding the succesor for the current node 
+
+        lets talk about finding the succesor of the Node.
+        The succesor will be NULL for the NODES which are " rightmost in there subtree ".
+        and if the succesor is NULL for this node, that means its actuall succesor is the parent
+        of the current subtree.
+
+            consider this example:
+                        
+                                                1
+                
+                                        2               4
+
+                                            3
+
+            its DLL conversion will look like this =   2 -> 3 -> 1 -> 4
+            
+            Now take a look at Node 3, it is the rightmost node in left subtree,
+            and from the below function we will get its inorder succesor to be NULL.
+            but in DLL we can see that after 3, 1 comes.
+            so we needt to connect it somehow to 1.
+
+            so to handle this case whenever we get the succesor to be NULL we connect that node to the parent.
+
+            else if succesor is not NULL, we just connect the succesor with current Node
+
+            For example for Node 2 , inorder succesor is 3 so we simpply connect it to it
+
+            There is 1 more special Case in this, when the parent is NULL. this will only occur
+            for the RIGHT MOST node in the entire tree. 
+
+            For example in above tree for Node 4, its inorder succesor is NULL, as well as parent is NULL
+            note that 4 is also the last Node in DLL. so we just make right_pointer of 4 to be NULL.
+
+        Now take a look at the recursive calls
+
+            Node *leftmost = helper(root->left, root);
+            Node *succesor = helper(root->right, parent);
+
+            when we call for left subtree we pass the current node as the parent. because current node
+            will be the succesor of the rightmost node in the left subtree.
+
+            when we cal for right subtree we pass the  " PARENT " of the current node, again because from the
+            right subtree we need to reach the rightmost node of tree, and as discussed above the succesor of 
+            rightmost node is parent of the tree.
+
+            Consider this example: 
+
+                                1
+                            2
+                                3
+                its DLL will be:  2->3->1
+
+                1 is succesor of 3 which is on left subtree
+
+                in this starting from 1 we call 2 as
+                    f(2, 1)
+                then we need to pass 1 further down to 3,
+                    f(3, 1)
+                        here we connect 1 and 3
+        
+        Now lets look at the return statement,
+        we can see that each time we are returning the leftmost node or the current node if the leftmost
+        node is NULL
+
+        this is because, consider the current tree to be the right subtree of a bigger tree, and as we no
+        the leftmost node of current tree is succesor of the root of parent tree. i.e we return
+        leftmost or current node;
+
+        Node* helper(Node *root, Node *parent){
+            if (root == NULL)
+                return NULL;
+            
+            Node *leftmost = helper(root->left, root);
+            Node *succesor = helper(root->right, parent);
+            
+            if (succesor == NULL){
+                root->right = parent;
+                if (parent)
+                    parent->left = root;
+            }else{
+                root->right = succesor;
+                succesor->left = root;
+            }
+            if (leftmost != NULL)
+                return leftmost; //it will become succesor of parent
+            return root;
+        }
+
+        Node * bToDLL(Node *root)
+        {
+            // your code here
+            return helper(root, NULL);
+        }
+
+    
